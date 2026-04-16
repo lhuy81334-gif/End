@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".a">
+    tools:context=".Add">
 
     <TextView
         android:id="@+id/textviewSanPham"
@@ -34,6 +34,7 @@
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textviewSanPham" />
+
     <EditText
         android:id="@+id/edittextMota"
         android:layout_width="wrap_content"
@@ -66,17 +67,18 @@
         android:layout_height="52dp"
         android:layout_marginStart="108dp"
         android:layout_marginTop="20dp"
-        android:contentDescription="TODO"
+        android:contentDescription="Camera"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edittextMota"
         app:srcCompat="@drawable/camera" />
+
     <ImageButton
         android:id="@+id/imagebutton_folder"
         android:layout_width="50dp"
         android:layout_height="52dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="108dp"
-        android:contentDescription="TODO"
+        android:contentDescription="Gallery"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edittextMota"
         app:srcCompat="@drawable/folder" />

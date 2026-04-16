@@ -65,29 +65,46 @@ public class SuaSanPham extends AppCompatActivity {
         }
 
         // Sự kiện Cập nhật
+        // Sự kiện Cập nhật
         btnUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Chuyển dữ liệu imageview sang mang byte
-                BitmapDrawable bitmapDrawable = (BitmapDrawable) imgview_no_imge_update.getDrawable();
-                Bitmap bitmap = bitmapDrawable.getBitmap();
-                ByteArrayOutputStream byteArr = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArr);
-                byte[] picture = byteArr.toByteArray();
+                try {
+                    // 1. Kiểm tra ảnh có tồn tại không
+                    if (imgview_no_imge_update.getDrawable() == null) {
+                        Toast.makeText(SuaSanPham.this, "Vui lòng chọn ảnh!", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
 
-                // Gọi database để update
-                MainActivity.database.UPDATE_SANPHAM(
-                        id,
-                        edtUpdateTenSP.getText().toString().trim(),
-                        edtUpdateMota.getText().toString().trim(),
-                        picture
-                );
+                    // 2. Chuyển dữ liệu imageview sang mang byte (Cách an toàn)
+                    imgview_no_imge_update.setDrawingCacheEnabled(true);
+                    imgview_no_imge_update.buildDrawingCache();
+                    Bitmap bitmap = imgview_no_imge_update.getDrawingCache();
 
-                Toast.makeText(SuaSanPham.this, "Cập nhật thành công!", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(SuaSanPham.this, MainActivity.class));
+                    ByteArrayOutputStream byteArr = new ByteArrayOutputStream();
+
+                    // QUAN TRỌNG: Sửa thành JPEG và chất lượng 50 để không bị văng
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 50, byteArr);
+                    byte[] picture = byteArr.toByteArray();
+
+                    // 3. Gọi database để update
+                    MainActivity.database.UPDATE_SANPHAM(
+                            id,
+                            edtUpdateTenSP.getText().toString().trim(),
+                            edtUpdateMota.getText().toString().trim(),
+                            picture
+                    );
+
+                    Toast.makeText(SuaSanPham.this, "Cập nhật thành công!", Toast.LENGTH_SHORT).show();
+
+                    // 4. Dùng finish() thay vì khởi tạo lại MainActivity để tiết kiệm bộ nhớ
+                    finish();
+
+                } catch (Exception e) {
+                    Toast.makeText(SuaSanPham.this, "Lỗi cập nhật: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
             }
         });
-
         // Sự kiện cho button camera
         img_camera_update.setOnClickListener(new View.OnClickListener() {
             @Override

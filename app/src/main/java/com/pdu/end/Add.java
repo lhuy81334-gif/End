@@ -3,7 +3,9 @@ package com.pdu.end;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -15,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -51,11 +54,17 @@ public class Add extends AppCompatActivity {
         ibtnCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(intent, REQUEST_CAMERA);
+                // Kiểm tra quyền Camera
+                if (checkSelfPermission(android.Manifest.permission.CAMERA) == android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                    // Nếu đã có quyền -> Mở camera
+                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    startActivityForResult(intent, REQUEST_CAMERA);
+                } else {
+                    // Nếu chưa có quyền -> Yêu cầu cấp quyền
+                    requestPermissions(new String[]{android.Manifest.permission.CAMERA}, 123);
+                }
             }
         });
-
         //sự kiện cho button folder
         ibtnFolder.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,24 +79,65 @@ public class Add extends AppCompatActivity {
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //chuyen du lieu imageview sang mang byte
-                BitmapDrawable bitmapDrawable = (BitmapDrawable) imgPicture.getDrawable();
-                Bitmap bitmap = bitmapDrawable.getBitmap();
-                ByteArrayOutputStream byteArr = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArr);
-                byte[] picture = byteArr.toByteArray();
+                try {
+                    // 1. Kiểm tra tên không được để trống
+                    String ten = edtTenSP.getText().toString().trim();
+                    if (ten.isEmpty()) {
+                        Toast.makeText(Add.this, "Vui lòng nhập tên sản phẩm!", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
 
-                MainActivity.database.INSERT_SANPHAM(
-                        edtTenSP.getText().toString().trim(),
-                        edtMota.getText().toString().trim(),
-                        picture);
+                    // 2. Kiểm tra và lấy ảnh từ ImageView
+                    if (imgPicture.getDrawable() == null) {
+                        Toast.makeText(Add.this, "Vui lòng chọn ảnh!", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
 
-                Toast.makeText(Add.this, "Add succesful...", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(Add.this, MainActivity.class));
+                    // Chuyển đổi an toàn: Lấy bitmap từ ImageView
+                    Bitmap bitmap;
+                    try {
+                        BitmapDrawable bitmapDrawable = (BitmapDrawable) imgPicture.getDrawable();
+                        bitmap = bitmapDrawable.getBitmap();
+                    } catch (ClassCastException e) {
+                        // Nếu ảnh là Vector (xml), xử lý khác để tránh văng
+                        Drawable drawable = imgPicture.getDrawable();
+                        bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+                        Canvas canvas = new Canvas(bitmap);
+                        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+                        drawable.draw(canvas);
+                    }
+
+                    // 3. NÉN ẢNH (BẮT BUỘC dùng JPEG 50 để tránh lỗi văng app)
+                    ByteArrayOutputStream byteArr = new ByteArrayOutputStream();
+// Sửa PNG thành JPEG và 100 thành 50
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 50, byteArr);
+                    byte[] picture = byteArr.toByteArray();
+
+                    // 4. Lưu vào Database
+                    MainActivity.database.INSERT_SANPHAM(
+                            ten,
+                            edtMota.getText().toString().trim(),
+                            picture);
+
+                    Toast.makeText(Add.this, "Thêm thành công!", Toast.LENGTH_SHORT).show();
+                    finish(); // Quay về MainActivity
+
+                } catch (Exception e) {
+                    Toast.makeText(Add.this, "Lỗi: Ảnh quá lớn hoặc không hợp lệ!", Toast.LENGTH_SHORT).show();
+                }
             }
         });
-
         btnHuy.setOnClickListener(v -> finish());
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == 123 && grantResults.length > 0 && grantResults[0] == android.content.pm.PackageManager.PERMISSION_GRANTED) {
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            startActivityForResult(intent, REQUEST_CAMERA);
+        } else {
+            Toast.makeText(this, "Bạn cần cấp quyền Camera để chụp ảnh!", Toast.LENGTH_SHORT).show();
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     //Sử dụng phương thức override onActivityResult() để đổ dữ liệu ảnh lên imgPicture

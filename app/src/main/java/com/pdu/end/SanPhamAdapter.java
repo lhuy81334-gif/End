@@ -31,12 +31,12 @@ public class SanPhamAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int i) {
-        return null;
+        return sanphamlist.get(i);
     }
 
     @Override
     public long getItemId(int i) {
-        return 0;
+        return i;
     }
 
     private class ViewHolder {
@@ -51,7 +51,6 @@ public class SanPhamAdapter extends BaseAdapter {
             holder = new ViewHolder();
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             view = inflater.inflate(layout, null);
-            //anh xa
             holder.txtTenSanPham = view.findViewById(R.id.textviewTenSanPhamCustom);
             holder.txtMoTa = view.findViewById(R.id.textviewMoTaCustom);
             holder.imgePicture = view.findViewById(R.id.imagePicture);
@@ -66,20 +65,19 @@ public class SanPhamAdapter extends BaseAdapter {
         holder.txtTenSanPham.setText(sanpham.getTenSP());
         holder.txtMoTa.setText(sanpham.getMota());
 
-        //chuyen mang byte[] sang Bitmap
+        // CHỐNG CRASH: Kiểm tra mảng byte ảnh có null không
         byte[] picture = sanpham.getHinh();
-        Bitmap bitmap = BitmapFactory.decodeByteArray(picture, 0, picture.length);
-        holder.imgePicture.setImageBitmap(bitmap);
+        if (picture != null && picture.length > 0) {
+            Bitmap bitmap = BitmapFactory.decodeByteArray(picture, 0, picture.length);
+            holder.imgePicture.setImageBitmap(bitmap);
+        } else {
+            holder.imgePicture.setImageResource(R.drawable.no_image);
+        }
 
-        // Bắt sự kiện xóa
-        holder.imgDelete.setOnClickListener(v -> {
-            context.XoaSanPham(sanpham.getId());
-        });
+        holder.imgDelete.setOnClickListener(v -> context.XoaSanPham(sanpham.getId()));
 
-        // Bắt sự kiện sửa
         holder.imgEdit.setOnClickListener(v -> {
             Intent intent = new Intent(context, SuaSanPham.class);
-            // Truyền dữ liệu sang màn hình sửa
             intent.putExtra("id", sanpham.getId());
             intent.putExtra("ten", sanpham.getTenSP());
             intent.putExtra("mota", sanpham.getMota());

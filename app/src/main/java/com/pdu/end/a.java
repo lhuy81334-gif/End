@@ -15,7 +15,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-public class ThemSanPhamAcitvity extends AppCompatActivity {
+public class a extends AppCompatActivity {
     Button btnAdd, btnHuy;
     EditText edtTenSP, edtMota;
     ImageButton ibtnCamera, ibtnFolder;
