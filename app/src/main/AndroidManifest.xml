@@ -25,7 +25,7 @@
             android:exported="false" />
             
         <activity
-            android:name=".Add"
+            android:name=".Themsanpham"
             android:exported="false" />
             
         <activity

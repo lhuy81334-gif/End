@@ -1,4 +1,4 @@
-package com.pdu.end;
+package com.pdu.android;
 
 import org.junit.Test;
 

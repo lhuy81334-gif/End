@@ -1,12 +1,12 @@
-package com.pdu.end;
+package com.pdu.android;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
+import com.pdu.android.R;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
@@ -39,13 +39,13 @@ public class MainActivity extends AppCompatActivity {
 
         Anhxa();
 
-        database = new Database(this, "QuanLySanPhamFinal1.sqlite", null, 1);        database.QueryData("CREATE TABLE IF NOT EXISTS SanPham(Id INTEGER PRIMARY KEY AUTOINCREMENT, Tensp VARCHAR(200), Mota VARCHAR(255), Picture BLOB)");
+        database = new Database(this, "QLSP.sqlite", null, 1);        database.QueryData("CREATE TABLE IF NOT EXISTS SanPham(Id INTEGER PRIMARY KEY AUTOINCREMENT, Tensp VARCHAR(200), Mota VARCHAR(255), Picture BLOB)");
 
         GetSanPhan();
 
         btnAdd.setOnClickListener(view -> {
             // Sửa ThemSanPhamActivity thành Add
-            Intent intent = new Intent(MainActivity.this, Add.class);
+            Intent intent = new Intent(MainActivity.this, Themsanpham.class);
             startActivity(intent);
         });
     }

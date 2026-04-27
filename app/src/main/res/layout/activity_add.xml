@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Add">
+    tools:context=".Themsanpham">
 
     <TextView
         android:id="@+id/textviewSanPham"

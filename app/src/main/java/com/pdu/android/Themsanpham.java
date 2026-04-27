@@ -1,4 +1,4 @@
-package com.pdu.end;
+package com.pdu.android;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -28,7 +28,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
-public class Add extends AppCompatActivity {
+public class Themsanpham extends AppCompatActivity {
     Button btnAdd, btnHuy;
     EditText edtTenSP, edtMota;
     ImageButton ibtnCamera, ibtnFolder;
@@ -69,9 +69,10 @@ public class Add extends AppCompatActivity {
         ibtnFolder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_PICK);
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.setType("image/*");
-                startActivityForResult(intent, REQUEST_FOLDER);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                startActivityForResult(Intent.createChooser(intent, "Chọn ảnh"), REQUEST_FOLDER);
             }
         });
 
@@ -83,13 +84,13 @@ public class Add extends AppCompatActivity {
                     // 1. Kiểm tra tên không được để trống
                     String ten = edtTenSP.getText().toString().trim();
                     if (ten.isEmpty()) {
-                        Toast.makeText(Add.this, "Vui lòng nhập tên sản phẩm!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Themsanpham.this, "Vui lòng nhập tên sản phẩm!", Toast.LENGTH_SHORT).show();
                         return;
                     }
 
                     // 2. Kiểm tra và lấy ảnh từ ImageView
                     if (imgPicture.getDrawable() == null) {
-                        Toast.makeText(Add.this, "Vui lòng chọn ảnh!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Themsanpham.this, "Vui lòng chọn ảnh!", Toast.LENGTH_SHORT).show();
                         return;
                     }
 
@@ -119,11 +120,11 @@ public class Add extends AppCompatActivity {
                             edtMota.getText().toString().trim(),
                             picture);
 
-                    Toast.makeText(Add.this, "Thêm thành công!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Themsanpham.this, "Thêm thành công!", Toast.LENGTH_SHORT).show();
                     finish(); // Quay về MainActivity
 
                 } catch (Exception e) {
-                    Toast.makeText(Add.this, "Lỗi: Ảnh quá lớn hoặc không hợp lệ!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Themsanpham.this, "Lỗi: Ảnh quá lớn hoặc không hợp lệ!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -143,12 +144,16 @@ public class Add extends AppCompatActivity {
     //Sử dụng phương thức override onActivityResult() để đổ dữ liệu ảnh lên imgPicture
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if(requestCode == REQUEST_CAMERA && resultCode == RESULT_OK && data != null){
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_CAMERA && resultCode == RESULT_OK && data != null) {
             Bitmap bitmap = (Bitmap) data.getExtras().get("data");
             imgPicture.setImageBitmap(bitmap);
         }
-        if(requestCode == REQUEST_FOLDER && resultCode == RESULT_OK && data != null){
+
+        if (requestCode == REQUEST_FOLDER && resultCode == RESULT_OK && data != null) {
             Uri uri = data.getData();
+
             try {
                 InputStream inputStream = getContentResolver().openInputStream(uri);
                 Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
@@ -157,7 +162,6 @@ public class Add extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
     private void Anh_Xa() {

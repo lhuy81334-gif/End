@@ -3,20 +3,19 @@ plugins {
 }
 
 android {
-    namespace 'com.pdu.end'
-    compileSdk {
-        version = release(36)
-    }
+    namespace 'com.pdu.android'
+    compileSdk 36 // Đổi từ 34 thành 36 theo yêu cầu của thư viện
 
     defaultConfig {
-        applicationId "com.pdu.end"
+        applicationId "com.pdu.android"
         minSdk 24
-        targetSdk 36
+        targetSdk 36 // Đổi thành 36 cho đồng bộ
         versionCode 1
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+
 
     buildTypes {
         release {
@@ -24,6 +23,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11

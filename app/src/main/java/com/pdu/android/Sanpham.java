@@ -1,4 +1,4 @@
-package com.pdu.end;
+package com.pdu.android;
 
 public class Sanpham {
     private int Id;
