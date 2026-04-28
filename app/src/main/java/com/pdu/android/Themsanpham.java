@@ -29,6 +29,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 
 public class Themsanpham extends AppCompatActivity {
+    Button btnSelect;
     Button btnAdd, btnHuy;
     EditText edtTenSP, edtMota;
     ImageButton ibtnCamera, ibtnFolder;
@@ -49,6 +50,7 @@ public class Themsanpham extends AppCompatActivity {
 
         //Ánh xạ
         Anh_Xa();
+
 
         //sự kiện cho button camera
         ibtnCamera.setOnClickListener(new View.OnClickListener() {

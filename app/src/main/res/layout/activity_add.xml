@@ -81,6 +81,8 @@
         app:layout_constraintTop_toBottomOf="@+id/edittextMota"
         app:srcCompat="@drawable/folder" />
 
+
+
     <Button
         android:id="@+id/buttonAdd"
         android:layout_width="wrap_content"

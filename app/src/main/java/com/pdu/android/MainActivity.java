@@ -3,6 +3,7 @@ package com.pdu.android;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     Button btnAdd;
+    Button btnSelect;
     ListView lvSP;
     ArrayList<Sanpham> arraySanPham;
     SanPhamAdapter adapter;
@@ -37,14 +39,28 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        Anhxa();
 
-        database = new Database(this, "QLSP.sqlite", null, 1);        database.QueryData("CREATE TABLE IF NOT EXISTS SanPham(Id INTEGER PRIMARY KEY AUTOINCREMENT, Tensp VARCHAR(200), Mota VARCHAR(255), Picture BLOB)");
+        Anhxa();
+        btnSelect = findViewById(R.id.buttonSelect);
+        lvSP = findViewById(R.id.listviewSanPham);
+        arraySanPham = new ArrayList<>();
+        adapter = new SanPhamAdapter(this, R.layout.row_listview_sanpham, arraySanPham);
+        lvSP.setAdapter(adapter);
+        btnSelect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                GetSanPhan();
+            }
+        });
+
+
+        database = new Database(this, "QLSP.sqlite", null, 1);
+        database.QueryData("CREATE TABLE IF NOT EXISTS SanPham(Id INTEGER PRIMARY KEY AUTOINCREMENT, Tensp VARCHAR(200), Mota VARCHAR(255), Picture BLOB)");
 
         GetSanPhan();
 
         btnAdd.setOnClickListener(view -> {
-            // Sửa ThemSanPhamActivity thành Add
+
             Intent intent = new Intent(MainActivity.this, Themsanpham.class);
             startActivity(intent);
         });
@@ -74,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
             arraySanPham = new ArrayList<>();
         }
         
-        Cursor cursor = database.GetData("SELECT * FROM SanPham");
+        Cursor cursor = database.GetData("SELECT * FROM SanPham"); //lay toan bo dl trong db
         arraySanPham.clear();
         while (cursor.moveToNext()){
             arraySanPham.add(new Sanpham(
@@ -97,4 +113,5 @@ public class MainActivity extends AppCompatActivity {
         btnAdd = findViewById(R.id.buttonAdd);
         lvSP = findViewById(R.id.listviewSanPham);
     }
+
 }
