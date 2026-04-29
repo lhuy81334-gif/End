@@ -32,7 +32,7 @@ public class Themsanpham extends AppCompatActivity {
     Button btnSelect;
     Button btnAdd, btnHuy;
     EditText edtTenSP, edtMota;
-    ImageButton ibtnCamera, ibtnFolder;
+    Button ibtnCamera, ibtnFolder;
     ImageView imgPicture;
     int REQUEST_CAMERA = 123;
     int REQUEST_FOLDER = 321;

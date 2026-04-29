@@ -21,7 +21,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     Button btnAdd;
-    Button btnSelect;
+
     ListView lvSP;
     ArrayList<Sanpham> arraySanPham;
     SanPhamAdapter adapter;
@@ -41,17 +41,12 @@ public class MainActivity extends AppCompatActivity {
 
 
         Anhxa();
-        btnSelect = findViewById(R.id.buttonSelect);
+
         lvSP = findViewById(R.id.listviewSanPham);
         arraySanPham = new ArrayList<>();
         adapter = new SanPhamAdapter(this, R.layout.row_listview_sanpham, arraySanPham);
         lvSP.setAdapter(adapter);
-        btnSelect.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                GetSanPhan();
-            }
-        });
+
 
 
         database = new Database(this, "QLSP.sqlite", null, 1);
@@ -94,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
         arraySanPham.clear();
         while (cursor.moveToNext()){
             arraySanPham.add(new Sanpham(
-                    cursor.getInt(0),
+                    cursor.getInt(0), //Day la phan lay ra id
                     cursor.getString(1),
                     cursor.getString(2),
                     cursor.getBlob(3)
